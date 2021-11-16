@@ -13,10 +13,20 @@ app.set('view engine', 'ejs');
 //crear conexion a bd
 
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize({
-    dialect:'sqlite',
-    storage:'./database.sqlite'
-})
+// const sequelize = new Sequelize({
+//     dialect:'sqlite',
+//     storage:'./database.sqlite'
+// })
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  }
+  );
 
 sequelize.authenticate()
 .then(()=>{
@@ -92,7 +102,7 @@ app.get('/',(req,res)=>{
     })
 })
 
-app.use(express.static('static'))
+app.use(express.static('https://eduam23.github.io/paginapersonalheroku/static/'))
 
 app.listen(port, ()=>{
     console.log(`Servidor en http://localhost:${port}`)
